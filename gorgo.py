@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import argparse
 import concurrent.futures
 import threading
 import csv
@@ -7,6 +8,20 @@ import os
 
 from colorama import Fore
 from colorama import Style
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-x', help='Nmap file to scan for inputs')
+parser.add_argument('-iL', help='Take pre-permutations as input (must be generated with -g)')
+parser.add_argument('-H', help='Hosts to spray against.')
+parser.add_argument('-U', help='Username file spray (username per newline)')
+parser.add_argument('-P', help='Password file spray (username per newline)')
+parser.add_argument('--protocols', help='Protocols to spray')
+parser.add_argument('--generate', help='Generate permutations')
+parser.add_argument('--run', help='Run spray')
+parser.add_argument('-random', help='Randomize target list')
+args = parser.parse_args()
+
+print(args.H)
 
 thread_local = threading.local()
 filename = "cand2"
