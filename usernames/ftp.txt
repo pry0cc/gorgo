@@ -1,0 +1,11 @@
+admin
+root
+user
+ftp
+apc
+supervisor
+ftpuser
+ftp_boot
+default
+anonymous
+Guest

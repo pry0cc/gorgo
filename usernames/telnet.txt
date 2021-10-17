@@ -1,0 +1,16 @@
+root
+admin
+guest
+default
+administrator
+user
+Administrator
+ubnt
+tech
+support
+supervisor
+ftpuser
+device
+debug
+cisco
+apc
