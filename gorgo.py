@@ -162,11 +162,11 @@ def parse_csv(filename):
 
 def main():
     signal.signal(signal.SIGINT, lambda x, y: sys.exit(0))
-    if (args.generate or args.run) and (args.U and args.P and args.protocols):
-        usernames = parse_file(args.U)
-        passwords = parse_file(args.P)
-        protocols = args.protocols.split(",")
-
+    if (args.generate or args.run) or (args.U and args.P and args.protocols):
+        if (args.U and args.P and args.protocols):
+            usernames = parse_file(args.U)
+            passwords = parse_file(args.P)
+            protocols = args.protocols.split(",")
         if args.x:
             hosts = parse_nmap(args.x, protocols)
             attempts = generate_permutations_nmap(hosts, usernames, passwords, protocols)
