@@ -6,6 +6,9 @@ import threading
 import csv
 import os
 import json
+import random
+import signal
+import sys
 
 from pathlib import Path
 from tqdm import tqdm
@@ -26,14 +29,14 @@ parser.add_argument('--generate',action='store_true', help='Only generate permut
 parser.add_argument('--threads', default=25, help='Threads to spray')
 parser.add_argument('-o', default='gorgo.log', help='Output filename')
 parser.add_argument('--run', action='store_true', help='Run spray')
-parser.add_argument('--random', help='Randomize target list')
+parser.add_argument('--random', action='store_true', help='Randomize target list')
 args = parser.parse_args()
 
 thread_local = threading.local()
-threads = 25
+threads = 30
 pwned = 0
 outfile  = args.o
-pbar = tqdm(total=100)
+pbar = tqdm()
 
 def auth_attempt(attempt):
     ip = attempt["ip"]
@@ -53,7 +56,7 @@ def auth_attempt(attempt):
 
     if "[SUCCESS]" in output:
         tqdm.write(f'{Fore.GREEN}AUTHENTICATION SUCCESSFUL! {Fore.YELLOW}{service}://{username}:{password}@{ip}:{port}{Style.RESET_ALL}')
-        print(f'{Fore.GREEN}{output}{Style.RESET_ALL}')
+        tqdm.write(f'{Fore.GREEN}{output}{Style.RESET_ALL}')
         with open(outfile+'.pwned', 'a') as f:
             f.write(json.dumps(attempt) + os.linesep)
             f.close()
@@ -158,6 +161,7 @@ def parse_csv(filename):
     return attempts
 
 def main():
+    signal.signal(signal.SIGINT, lambda x, y: sys.exit(0))
     if (args.generate or args.run) and (args.U and args.P and args.protocols):
         usernames = parse_file(args.U)
         passwords = parse_file(args.P)
@@ -172,6 +176,9 @@ def main():
             hosts = parse_file(args.H)
             attempts = generate_permutations(hosts, usernames, passwords, protocols)
 
+        if args.random:
+            random.shuffle(attempts)
+
         if args.run:
             pbar.total = len(attempts)
             pbar.refresh()
@@ -181,6 +188,9 @@ def main():
     else:
         parser.print_help()
 
-main()
 
-
+if __name__ == '__main__':
+    try:
+        main()
+    except KeyboardInterrupt:
+        passwords
